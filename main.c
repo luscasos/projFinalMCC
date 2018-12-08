@@ -17,6 +17,7 @@
 #include "lib/avr_usart.h"
 #include "lib/avr_twi_master.h"
 #include "display/lcd_i2c.h"
+#include "ModBus.h"
 #include <stdio.h>
 
 #define ESTOURO 12800 //tempo de estouro é de 12800 us
@@ -24,6 +25,7 @@
 
 volatile uint16_t time_1, time_2; //variáveis atribuídas ao tempo entre cada interrupção externa
 volatile uint16_t over_flow;	  //no caso de estouro de timer, será acrecentado um valor
+
 
 //configuração do timer
 void timer0_init(){
@@ -80,9 +82,9 @@ uint32_t calc_real_time_ms(uint16_t time, uint16_t over_flow, uint16_t t_estouro
 
 uint32_t calc_speed_kmh(uint32_t frequencie, uint32_t radius){
 
-	FILE *debug = get_usart_stream();
-
-	USART_Init(B9600);
+//	FILE *debug = get_usart_stream();
+//
+//	USART_Init(B9600);
 
 
 
@@ -100,7 +102,7 @@ uint32_t calc_speed_kmh(uint32_t frequencie, uint32_t radius){
 		speed = (speed * 36) / 10;
 	}
 
-	fprintf(debug, "%d\n\r", speed);
+	//fprintf(debug, "%d\n\r", speed);
 
 	return speed;
 }
@@ -140,7 +142,7 @@ void print_data_LCD_speed(uint16_t speed){
 	escreve_LCD_i2c("       ");
 	cmd_LCD_i2c(0xC0, 0);
 
-	uint8_t buffer[4], int_num = 0, unidade = 0, decimal = 0, centezimal = 0;
+	uint8_t buffer[4], int_num = 0, decimal = 0, centezimal = 0;
 
 	int_num = speed/100;
 	decimal = (speed%100)/10;
@@ -158,6 +160,11 @@ void print_data_LCD_speed(uint16_t speed){
 }
 
 int main(){
+
+
+	FILE *debug = get_usart_stream();
+
+	USART_Init(B9600);
 
 	timer0_init();
 
@@ -179,6 +186,7 @@ int main(){
 	uint16_t real_time;
 	uint16_t frequencie = 0;
 	uint32_t speed = 0;
+	uint8_t *buffer;
 
 	while(1){
 
@@ -186,7 +194,14 @@ int main(){
 		frequencie = 1000000/real_time;
 		speed = calc_speed_kmh(frequencie, 28);
 		print_data_LCD_speed(speed);
+		buffer = create_buffer(0x15, 0x01, 0x05, speed);
+
+		for(uint8_t i = 0; i < 8; i++){
+			fprintf(debug, "%x", buffer[i]);
+		}
+		fprintf(debug, "\n\r");
 		//print_data_LCD(frequencie);
+
 	}
 
 	return 0;
