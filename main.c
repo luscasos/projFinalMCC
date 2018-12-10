@@ -139,11 +139,14 @@ void print_data_LCD(uint16_t dado){
 int main(){
 
 
-	FILE *debug = get_usart_stream();
-
+//	FILE *debug = get_usart_stream();
+//
 	USART_Init(B9600);
 
 	timer0_init();
+
+	SET_BIT(DDRB, PB5);
+	SET_BIT(PORTB, PB5);
 
 	//interrupção por borda de subida
 	EICRA = (1 << ISC11) | (1 << ISC10);
@@ -160,6 +163,7 @@ int main(){
 
 	escreve_LCD_i2c("Speed(Km/h):");
 
+	uint8_t rx_pkg[16];
 	uint16_t real_time;
 	uint16_t frequencie = 0;
 	uint32_t speed = 0;
@@ -174,16 +178,24 @@ int main(){
 		print_data_LCD(speed);
 		buffer = create_buffer(0x15, 0x01, 0x05, speed);
 
-		for(uint8_t i = 0; i < 8; i++){
-					fprintf(debug, "%x", buffer[i]);
-				}
-				fprintf(debug, "\n\r");
+//		for(uint8_t i = 0; i < 8; i++){
+//			fprintf(debug, "%x", buffer[i]);
+//		}
+//		fprintf(debug, "\n\r");
 
 		for (i=0; i < 8; i++)
-					USART_tx(buffer[i]);
+			USART_tx(buffer[i]);
+
+
+
+//		for (i=0; i < 8;i++)
+//			rx_pkg[i] = USART_rx();
+////
+		_delay_ms(1000);
+
 
 
 	}
-
+	//CLR_BIT(PORTB, PB5);
 	return 0;
 }

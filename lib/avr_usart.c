@@ -50,6 +50,7 @@ void USART_tx(uint8_t data) {
 /* Receive one byte: busy waiting */
 uint8_t USART_rx() {
 
+
 	/* Wait until something arrive  */
 	while (!(USART_0->UCSR_A & (1 << RXC0)));
 
@@ -64,16 +65,17 @@ static int usart_putchar(char c, FILE *fp){
 }
 
 
-//ISR(USART_RX_vect){
-//
-//
-//
-//
-//}
-//
-//ISR(USART_TX_vect){
-//
-//
-//
-//
-//}
+ISR(USART_RX_vect){
+
+
+	CLR_BIT(PORTB, PB5);
+
+
+}
+
+ISR(USART_TX_vect){
+
+
+
+
+}
