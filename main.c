@@ -110,52 +110,29 @@ uint32_t calc_speed_kmh(uint32_t frequencie, uint32_t radius){
 //função para imprimir no LCD 16x2
 //imprime duas casas decimais, dezena e unidade
 //parâmetros: frequencia
-void print_data_LCD(uint16_t frequencie){
+void print_data_LCD(uint16_t dado){
 
 	cmd_LCD_i2c(0xC0, 0);
 
 	cmd_LCD_i2c(0xC0, 0);
 
-	uint8_t buffer[4], dezena = 0, unidade = 0, decimal = 0, centezimal = 0;
+	uint8_t dezena = 0, unidade = 0, decimal = 0, centezimal = 0;
+	char buffer[6];
 
-	dezena = frequencie/1000;
-	unidade = (frequencie%1000)/100;
-	decimal = (frequencie%100)/10;
-	centezimal = (frequencie%10/1);
+	dezena = dado/1000;
+	unidade = (dado%1000)/100;
+	decimal = (dado%100)/10;
+	centezimal = (dado%10/1);
 
-	itoa(dezena, buffer, 10);
+
+	buffer[0]=dezena+'0';
+	buffer[1]=unidade+'0';
+	buffer[2]='.';
+	buffer[3]=decimal+'0';
+	buffer[4]=centezimal+'0';
+	buffer[5]='\0';
 	escreve_LCD_i2c(buffer);
-	itoa(unidade, buffer, 10);
-	escreve_LCD_i2c(buffer);
-	escreve_LCD_i2c(".");
-	itoa(decimal, buffer, 10);
-	escreve_LCD_i2c(buffer);
-	itoa(centezimal, buffer, 10);
-	escreve_LCD_i2c(buffer);
 
-}
-
-//função para imprimir a velocidade no display
-void print_data_LCD_speed(uint16_t speed){
-
-	cmd_LCD_i2c(0xC0, 0);
-	escreve_LCD_i2c("       ");
-	cmd_LCD_i2c(0xC0, 0);
-
-	uint8_t buffer[4], int_num = 0, decimal = 0, centezimal = 0;
-
-	int_num = speed/100;
-	decimal = (speed%100)/10;
-	centezimal = (speed%10/1);
-
-
-	itoa(int_num, buffer, 10);
-	escreve_LCD_i2c(buffer);
-	escreve_LCD_i2c(".");
-	itoa(decimal, buffer, 10);
-	escreve_LCD_i2c(buffer);
-	itoa(centezimal, buffer, 10);
-	escreve_LCD_i2c(buffer);
 
 }
 
@@ -187,20 +164,24 @@ int main(){
 	uint16_t frequencie = 0;
 	uint32_t speed = 0;
 	uint8_t *buffer;
+	uint8_t i;
 
 	while(1){
 
 		real_time = calc_real_time_ms(time_2, time_1, ESTOURO, TOP);
 		frequencie = 1000000/real_time;
 		speed = calc_speed_kmh(frequencie, 28);
-		print_data_LCD_speed(speed);
+		print_data_LCD(speed);
 		buffer = create_buffer(0x15, 0x01, 0x05, speed);
 
 		for(uint8_t i = 0; i < 8; i++){
-			fprintf(debug, "%x", buffer[i]);
-		}
-		fprintf(debug, "\n\r");
-		//print_data_LCD(frequencie);
+					fprintf(debug, "%x", buffer[i]);
+				}
+				fprintf(debug, "\n\r");
+
+		for (i=0; i < 8; i++)
+					USART_tx(buffer[i]);
+
 
 	}
 

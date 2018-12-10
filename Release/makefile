@@ -32,56 +32,56 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
-rpm_calculator_i2c.lss \
+projFinalMCC.lss \
 
 FLASH_IMAGE += \
-rpm_calculator_i2c.hex \
+projFinalMCC.hex \
 
 EEPROM_IMAGE += \
-rpm_calculator_i2c.eep \
+projFinalMCC.eep \
 
 SIZEDUMMY += \
 sizedummy \
 
 
 # All Target
-all: rpm_calculator_i2c.elf secondary-outputs
+all: projFinalMCC.elf secondary-outputs
 
 # Tool invocations
-rpm_calculator_i2c.elf: $(OBJS) $(USER_OBJS)
+projFinalMCC.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C Linker'
-	avr-gcc -Wl,-Map,rpm_calculator_i2c.map -mmcu=atmega328p -o "rpm_calculator_i2c.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	avr-gcc -Wl,-Map,projFinalMCC.map -mmcu=atmega328p -o "projFinalMCC.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-rpm_calculator_i2c.lss: rpm_calculator_i2c.elf
+projFinalMCC.lss: projFinalMCC.elf
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S rpm_calculator_i2c.elf  >"rpm_calculator_i2c.lss"
+	-avr-objdump -h -S projFinalMCC.elf  >"projFinalMCC.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-rpm_calculator_i2c.hex: rpm_calculator_i2c.elf
+projFinalMCC.hex: projFinalMCC.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex rpm_calculator_i2c.elf  "rpm_calculator_i2c.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex projFinalMCC.elf  "projFinalMCC.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-rpm_calculator_i2c.eep: rpm_calculator_i2c.elf
+projFinalMCC.eep: projFinalMCC.elf
 	@echo 'Create eeprom image (ihex format)'
-	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex rpm_calculator_i2c.elf  "rpm_calculator_i2c.eep"
+	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex projFinalMCC.elf  "projFinalMCC.eep"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-sizedummy: rpm_calculator_i2c.elf
+sizedummy: projFinalMCC.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega328p rpm_calculator_i2c.elf
+	-avr-size --format=avr --mcu=atmega328p projFinalMCC.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(FLASH_IMAGE)$(ELFS)$(OBJS)$(ASM_DEPS)$(EEPROM_IMAGE)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) rpm_calculator_i2c.elf
+	-$(RM) $(FLASH_IMAGE)$(ELFS)$(OBJS)$(ASM_DEPS)$(EEPROM_IMAGE)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) projFinalMCC.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY)
