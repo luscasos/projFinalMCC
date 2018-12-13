@@ -10,8 +10,13 @@
 #include <avr/interrupt.h>
 #include "avr_usart.h"
 #include "bits.h"
+#include "../ModBus.h"
+
+//uint8_t *buf;
 
 static int usart_putchar(char c, FILE *fp);
+uint8_t i=0;
+uint8_t rx_pkg[8];
 
 /* Stream init for printf  */
 FILE usart_str = FDEV_SETUP_STREAM(usart_putchar, NULL, _FDEV_SETUP_WRITE);
@@ -64,11 +69,28 @@ static int usart_putchar(char c, FILE *fp){
 	return 0;
 }
 
+//void setbuf(uint8_t *buf){
+//	buffer = buf;
+//}
+
 
 ISR(USART_RX_vect){
 
 
-	CLR_BIT(PORTB, PB5);
+	uint16_t crc = 0;
+	while ( USART_0->UCSR_A & (1<<RXC0) )
+
+	rx_pkg[i] = USART_0->UDR_;
+	i++;
+	if(i==8){
+		crc = CRC16_2(rx_pkg, 6);
+		i=0;
+		uint16_t rcrc = (rx_pkg[6]<<8) & rx_pkg[6];
+		if(rcrc!=crc){
+			for (i=0; i < 8; i++)
+				USART_tx(buffer[i]);
+		}
+	}
 
 
 }

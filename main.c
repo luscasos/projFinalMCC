@@ -177,6 +177,7 @@ int main(){
 		speed = calc_speed_kmh(frequencie, 28);
 		print_data_LCD(speed);
 		buffer = create_buffer(0x15, 0x01, 0x05, speed);
+//		setbuf(buffer);
 
 //		for(uint8_t i = 0; i < 8; i++){
 //			fprintf(debug, "%x", buffer[i]);
