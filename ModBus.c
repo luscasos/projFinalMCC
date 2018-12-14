@@ -2,7 +2,8 @@
  * ModBus.c
  *
  *  Created on: 7 de dez de 2018
- *      Author: rafae
+ *      Author: Rafael & Lucas
+ *      Instituto Federal de Santa Catarina
  */
 
 
@@ -40,11 +41,6 @@ uint16_t CRC16_2(uint8_t *buf, int len) {
 
 uint8_t *create_buffer(uint8_t addr, uint8_t cmd, uint16_t reg, uint16_t data){
 
-
-	FILE *debug = get_usart_stream();
-
-	USART_Init(B9600);
-
 	uint8_t  mask = 0xFF;
 	uint16_t crc = 0;
 
@@ -59,15 +55,6 @@ uint8_t *create_buffer(uint8_t addr, uint8_t cmd, uint16_t reg, uint16_t data){
 
 	buffer[6] = (crc>>8);
 	buffer[7] = crc & mask;
-
-//	for (uint8_t i = 0; i < 8; i++) {
-//
-//		if(buffer[i]==0)
-//			fprintf(debug, "0");
-//		else
-//			fprintf(debug, "%x", buffer[i]);
-//	}
-//	fprintf(debug, "\n\r");
 
 	return buffer;
 }

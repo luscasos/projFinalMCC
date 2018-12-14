@@ -2,7 +2,8 @@
  * main.c
  *
  *  Created on: 7 de nov de 2018
- *      Author: rafael hiller
+ *      Author: Rafael Hiller & Lucas Odair
+ *      Instituto Federal de Santa Catarina
  */
 
 
@@ -82,12 +83,6 @@ uint32_t calc_real_time_ms(uint16_t time, uint16_t over_flow, uint16_t t_estouro
 
 uint32_t calc_speed_kmh(uint32_t frequencie, uint32_t radius){
 
-//	FILE *debug = get_usart_stream();
-//
-//	USART_Init(B9600);
-
-
-
 	uint32_t speed = 0;
 
 	if (frequencie > 1000) {
@@ -101,8 +96,6 @@ uint32_t calc_speed_kmh(uint32_t frequencie, uint32_t radius){
 		speed = speed / 1000;
 		speed = (speed * 36) / 10;
 	}
-
-	//fprintf(debug, "%d\n\r", speed);
 
 	return speed;
 }
@@ -138,9 +131,6 @@ void print_data_LCD(uint16_t dado){
 
 int main(){
 
-
-//	FILE *debug = get_usart_stream();
-//
 	USART_Init(B9600);
 
 	timer0_init();
@@ -163,7 +153,6 @@ int main(){
 
 	escreve_LCD_i2c("Speed(Km/h):");
 
-	uint8_t rx_pkg[16];
 	uint16_t real_time;
 	uint16_t frequencie = 0;
 	uint32_t speed = 0;
@@ -177,26 +166,15 @@ int main(){
 		speed = calc_speed_kmh(frequencie, 28);
 		print_data_LCD(speed);
 		buffer = create_buffer(0x15, 0x01, 0x05, speed);
-//		setbuf(buffer);
-
-//		for(uint8_t i = 0; i < 8; i++){
-//			fprintf(debug, "%x", buffer[i]);
-//		}
-//		fprintf(debug, "\n\r");
 
 		for (i=0; i < 8; i++)
 			USART_tx(buffer[i]);
 
-
-
-//		for (i=0; i < 8;i++)
-//			rx_pkg[i] = USART_rx();
-////
 		_delay_ms(1000);
 
 
 
 	}
-	//CLR_BIT(PORTB, PB5);
+
 	return 0;
 }

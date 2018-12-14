@@ -2,7 +2,8 @@
  * ModBus.h
  *
  *  Created on: 7 de dez de 2018
- *      Author: rafae
+ *      Author: Rafae Hiller & Lucas Odair
+ *      Instituto Federal de Santa Catarina
  */
 
 #ifndef MODBUS_H_

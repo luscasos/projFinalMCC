@@ -69,10 +69,6 @@ static int usart_putchar(char c, FILE *fp){
 	return 0;
 }
 
-//void setbuf(uint8_t *buf){
-//	buffer = buf;
-//}
-
 
 ISR(USART_RX_vect){
 
