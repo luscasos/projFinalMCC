@@ -83,8 +83,7 @@ ISR(USART_RX_vect){
 		i=0;
 		uint16_t rcrc = (rx_pkg[6]<<8) & rx_pkg[6];
 		if(rcrc!=crc){
-			for (i=0; i < 8; i++)
-				USART_tx(buffer[i]);
+			// tratamento de erro
 		}
 	}
 
